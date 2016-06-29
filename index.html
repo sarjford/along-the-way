@@ -2,10 +2,56 @@
 <head>
   <meta charset="UTF-8">
   <title>Calendar</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <style>
+    .table {
+      table-layout: fixed;
+      font-size: 14px;
+    }
+    ul {
+    list-style:none;
+    padding-left:3px;
+    } ​
+
+  </style>
   <script src="lib/jquery/dist/jquery.js"></script>
   <script src='test/schedule.js'></script>
 </head>
 <body>
+<div class = 'well text-container center-block'> 
+<table class='table table-bordered'>
+  <thead class='thead-inverse'>
+    <tr id="header">
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+    </tr>
+  </thead>
+  <tr id="1">
+    <td id="Monday"></td>
+    <td id="Tuesday"></td>
+    <td id="Wednesday"></td>
+    <td id="Thursday"></td>
+    <td id="Friday"></td>
+  </tr>
+  <tr id="2">
+    <td id="Monday"></td>
+    <td id="Tuesday"></td>
+    <td id="Wednesday"></td>
+    <td id="Thursday"></td>
+    <td id="Friday"></td>
+  </tr>  
+  <tr id="3">
+    <td id="Monday"></td>
+    <td id="Tuesday"></td>
+    <td id="Wednesday"></td>
+    <td id="Thursday"></td>
+    <td id="Friday"></td>
+  </tr> 
+</table>
 
 </body>
 <script src="./lib/expect/index.js"></script>
