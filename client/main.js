@@ -1,8 +1,3 @@
-// function App(options) {
-//   $(options.root).text(options.text);
-//   $(options.root).css('background', options.background);
-// }
-
 var map;
 var searchpoints = 0;
 var points;
@@ -170,20 +165,19 @@ function initMap() {
       let result = [];
 
       // adds points to map at specific interval
-      while (remainingDist > 0) {
-        // result.push(path.GetPointAtDistance(1000*i));
-        createMarker(map, path.GetPointAtDistance(1000*i), i+" km");
-        remainingDist -= 1000;
-        i++;
-      }
-      function createMarker(map, latlng, title){
-        var marker = new google.maps.Marker({
-          position:latlng,
-          map:map,
-          title: title
-          });
-        }
-
+      // while (remainingDist > 0) {
+      //   // result.push(path.GetPointAtDistance(1000*i));
+      //   createMarker(map, path.GetPointAtDistance(1000*i), i+" km");
+      //   remainingDist -= 1000;
+      //   i++;
+      // }
+      // function createMarker(map, latlng, title) {
+      //   var marker = new google.maps.Marker({
+      //     position:latlng,
+      //     map:map,
+      //     title: title
+      //     });
+      //   }
       // grabs points at a specified distance into an array
       points = path.GetPointsAtDistance(1000);
       console.log(points);
@@ -230,6 +224,7 @@ function initMap() {
 }
 
 
+
 $(document).ready(function(){
 
   $("#search-input").on("keydown", function(event) {
@@ -240,38 +235,46 @@ $(document).ready(function(){
       points = JSON.stringify(points);
       console.log(points);
 
+      function createMarker(map, location, title) {
+        var marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          title: title,
+          });
+        }
+
         $.ajax({
     	    type: 'POST',
     	    url: "/",
     	    dataType: "json",
     	    data: { category: category, points: points },
     	    success: function(data) {
-    	    	// var marker;
-    	    	// var latLing = {lat: 33.8381996154785, lng: -117.870178222656};
-    	    	// var lat;
-    	    	// var ling;
-    	    	console.log("data from frontend "+JSON.stringify(data));
-            //
-    	    	// for (var i = 0; i < data.length; i++){
-    	    	// 	// console.log(i)
-    	    	// 	// console.log(data[i].location.latitude);
-    	    	// 	// console.log(data[i].location.longitude)
-            //
-    	    	// 	// latLing = {}
-    	    	// 	lat = data[i].location.latitude;
-    	    	// 	ling = data[i].location.longitude;
-    	    	// 	// latLing.lat = lat;
-    	    	// 	// latLing.lng = ling;
-    	    	// 	// console.log(latLing);
-            //   latLing = new google.maps.LatLng(lat, ling);
-            //   console.log(JSON.stringify(latLing));
-            //
-    	    	// 	marker = new google.maps.Marker({
-    	    	// 		position: latLing,
-            // 		map: map,
-            //     title: 'Yelp Business',
-    	    	// 	});
-    	    	// }
+
+    	    	console.log("data from frontend", data);
+
+    	    	for (var i = 0; i < data.length; i++){
+    	    		console.log(i);
+    	    		console.log('long', JSON.parse(data[i].location).latitude);
+    	    		console.log('lat', JSON.parse(data[i].location).longitude);
+              console.log('name', data[i].name)
+
+    	    		let lat = JSON.parse(data[i].location).latitude;
+    	    		let ling = JSON.parse(data[i].location).longitude;
+              let title = data[i].name;
+
+              latLing = new google.maps.LatLng(lat, ling);
+              console.log(latLing);
+
+              createMarker(map, latLing, title);
+
+    	    		// marker = new google.maps.Marker({
+    	    		// 	position: latLing,
+            	// 	map: map,
+              //   title: 'Yelp Business',
+    	    		// });
+    	    	}
+
+
     	    }
         });
       }

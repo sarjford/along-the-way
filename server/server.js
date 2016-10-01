@@ -56,7 +56,7 @@ function request_yelp(set_parameters) {
   const url = 'http://api.yelp.com/v2/search';
   // parameter-setting:
   const default_parameters = {
-    radius_filter: 8000,
+    radius_filter: 2000,
     sort: 1,
     limit: 1,
   };
