@@ -179,40 +179,9 @@ function initMap() {
       //     });
       //   }
       // grabs points at a specified distance into an array
+
       points = path.GetPointsAtDistance(1000);
       console.log(points);
-
-      // let distance = response.routes[0].legs[0].distance.value;
-      // console.log('distance '+distance);
-      // console.log('steps ', JSON.stringify(steps));
-      // points = [];
-      // let increment = Math.round(steps.length/5);
-      //
-      // if (distance < 500) {
-      //   points.push(steps[Math.round(steps.length/2)]);
-      // } else {
-      //   // points.push(steps[0]);
-      //   for (var i = 1; i < steps.length; i += increment) {
-      //     console.log(steps[i])
-      //     points.push(steps[i]);
-      //   }
-      //   // points = JSON.stringify(points);
-      // }
-      // console.log(points);
-      // console.log(points.length);
-      // for (var i = 0; i < points.length; i++) {
-      //   lat = points[i].lat();
-      //   ling = points[i].lng();
-      //
-      //   latLing = new google.maps.LatLng(lat, ling);
-      //   console.log(JSON.stringify(latLing));
-      //
-      //   marker = new google.maps.Marker({
-      //     position: latLing,
-      //     map: map,
-      //     title: 'Yelp Business',
-      //   });
-      // }
 
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
@@ -223,25 +192,33 @@ function initMap() {
   }
 }
 
+$(document).ready(function() {
+  let markersArray = [];
 
+  function clearMarkers() {
+    for (var i = 0; i < markersArray.length; i++ ){
+      console.log(i);
+      markersArray[i].setMap(null);
+    }
+    markersArray.length = 0;
+  }
 
-$(document).ready(function(){
+  $("#submit").on("click", function(event) {
+    console.log(markersArray);
+    clearMarkers();
+  });
 
   $("#search-input").on("keydown", function(event) {
     if (event.which === 13) {
+      console.log("markers array 2", markersArray.length);
+      clearMarkers();
+      console.log("markers array 2", markersArray.length);
+
       var inputEl = $("#search-input");
       category = inputEl.val();
       inputEl.val('');
       points = JSON.stringify(points);
       console.log(points);
-
-      function createMarker(map, location, title) {
-        var marker = new google.maps.Marker({
-          position: location,
-          map: map,
-          title: title,
-          });
-        }
 
         $.ajax({
     	    type: 'POST',
@@ -249,34 +226,50 @@ $(document).ready(function(){
     	    dataType: "json",
     	    data: { category: category, points: points },
     	    success: function(data) {
-
     	    	console.log("data from frontend", data);
 
     	    	for (var i = 0; i < data.length; i++){
-    	    		console.log(i);
-    	    		console.log('long', JSON.parse(data[i].location).latitude);
-    	    		console.log('lat', JSON.parse(data[i].location).longitude);
-              console.log('name', data[i].name)
+    	    		// console.log(i);
+    	    		// console.log('long', JSON.parse(data[i].location).latitude);
+    	    		// console.log('lat', JSON.parse(data[i].location).longitude);
+              // console.log('name', data[i].name)
 
     	    		let lat = JSON.parse(data[i].location).latitude;
     	    		let ling = JSON.parse(data[i].location).longitude;
               let title = data[i].name;
+              let latLing = new google.maps.LatLng(lat, ling);
 
-              latLing = new google.maps.LatLng(lat, ling);
-              console.log(latLing);
+              let contentString =
+              "<div id=infoWindow>"+
+              "<h2>"+data[i].name+"</h2>"+
+              "<img src="+data[i].rating+"><br>"+
+              "<a href="+data[i].url+">Visit the Yelp Page</a>"+
+              "</div>";
 
-              createMarker(map, latLing, title);
+              let marker = new google.maps.Marker({
+                position: latLing,
+                title: data[i].name,
+                animation: google.maps.Animation.DROP,
+              });
 
-    	    		// marker = new google.maps.Marker({
-    	    		// 	position: latLing,
-            	// 	map: map,
-              //   title: 'Yelp Business',
-    	    		// });
+              markersArray.push(marker);
+
+              function getInfoCallback(map, content) {
+                var infoWindow = new google.maps.InfoWindow({ content: contentString });
+                return function() {
+                  infoWindow.setContent(content);
+                  infoWindow.open(map, this);
+                  };
+              }
+
+              google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
     	    	}
-
-
+            for (var i = 0; i < markersArray.length; i++){
+              markersArray[i].setMap(map);
+            }
     	    }
         });
+
       }
     });
 });

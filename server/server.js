@@ -10,7 +10,6 @@ const bodyParser = require('body-parser');
 const Promise = require('bluebird');
 const request = require('request-promise');
 
-const results = [];
 const set_parameters = {};
 
 
@@ -22,6 +21,7 @@ app.use(bodyParser.json());
 // receives category and coordinates data from front end, makes yelp call
 // and returns response to front end
 app.post('/', function (req, res) {
+  const results = [];
   const points = JSON.parse(req.body.points);
   set_parameters.term = req.body.category;
   set_parameters.categories = req.body.category;
@@ -67,9 +67,6 @@ function request_yelp(set_parameters) {
     oauth_timestamp: n().toString().substr(0, 10),
     oauth_signature_method: 'HMAC-SHA1',
     oauth_version: '1.0',
-    radius_filter: 8000,
-    sort: 1,
-    limit: 1,
   };
   const parameters = _.assign(default_parameters, set_parameters, required_parameters);
   // secrets-setting:
