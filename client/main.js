@@ -4,6 +4,17 @@ var points;
 var category;
 var markers;
 
+
+let markersArray = [];
+
+function clearMarkers() {
+  for (var i = 0; i < markersArray.length; i++ ) {
+    console.log(i);
+    markersArray[i].setMap(null);
+  }
+  markersArray.length = 0;
+}
+
 function initMap() {
 
   // method that calculates distance from
@@ -79,7 +90,6 @@ function initMap() {
     disableDefaultUI: true,
   });
 
-
   var directionsService = new google.maps.DirectionsService;
   var directionsDisplay = new google.maps.DirectionsRenderer;
   directionsDisplay.setMap(map);
@@ -110,7 +120,7 @@ function initMap() {
       return;
     }
     expandViewportToFitPlace(map, place);
-
+    clearMarkers();
     // If the place has a geometry, store its place ID and route if we have
     // the other place ID
     origin_place_id = place.place_id;
@@ -126,7 +136,7 @@ function initMap() {
       return;
     }
     expandViewportToFitPlace(map, place);
-
+    clearMarkers();
     // If the place has a geometry, store its place ID and route if we have
     // the other place ID
     destination_place_id = place.place_id;
@@ -193,26 +203,8 @@ function initMap() {
 }
 
 $(document).ready(function() {
-  let markersArray = [];
-
-  function clearMarkers() {
-    for (var i = 0; i < markersArray.length; i++ ){
-      console.log(i);
-      markersArray[i].setMap(null);
-    }
-    markersArray.length = 0;
-  }
 
   $("#submit").on("click", function(event) {
-    console.log(markersArray);
-    clearMarkers();
-  });
-
-  $("#search-input").on("keydown", function(event) {
-    if (event.which === 13) {
-      console.log("markers array 2", markersArray.length);
-      clearMarkers();
-      console.log("markers array 2", markersArray.length);
 
       var inputEl = $("#search-input");
       category = inputEl.val();
@@ -248,6 +240,7 @@ $(document).ready(function() {
 
               let marker = new google.maps.Marker({
                 position: latLing,
+                map: map,
                 title: data[i].name,
                 animation: google.maps.Animation.DROP,
               });
@@ -264,12 +257,8 @@ $(document).ready(function() {
 
               google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
     	    	}
-            for (var i = 0; i < markersArray.length; i++){
-              markersArray[i].setMap(map);
-            }
     	    }
         });
 
-      }
     });
 });
