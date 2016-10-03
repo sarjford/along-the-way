@@ -1,106 +1,103 @@
 var map;
-var searchpoints = 0;
 var points;
 var category;
 var markers;
-
-
 let markersArray = [];
 
+// clears search markers from the map
 function clearMarkers() {
-  for (var i = 0; i < markersArray.length; i++ ) {
-    console.log(i);
+  for (let i = 0; i < markersArray.length; i++) {
     markersArray[i].setMap(null);
   }
   markersArray.length = 0;
 }
 
 function initMap() {
-
-  // method that calculates distance from
-  google.maps.LatLng.prototype.distanceFrom = function(newLatLng) {
-    var EarthRadiusMeters = 6378137.0; // meters
-    var lat1 = this.lat();
-    var lon1 = this.lng();
-    var lat2 = newLatLng.lat();
-    var lon2 = newLatLng.lng();
-    var dLat = (lat2-lat1) * Math.PI / 180;
-    var dLon = (lon2-lon1) * Math.PI / 180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+  // method that calculates distance from a specific point
+  google.maps.LatLng.prototype.distanceFrom = function (newLatLng) {
+    const EarthRadiusMeters = 6378137.0; // meters
+    const lat1 = this.lat();
+    const lon1 = this.lng();
+    const lat2 = newLatLng.lat();
+    const lon2 = newLatLng.lng();
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
       Math.sin(dLon/2) * Math.sin(dLon/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = EarthRadiusMeters * c;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = EarthRadiusMeters * c;
     return d;
-  }
+  };
 
   // method which returns a GLatLng of a point a given distance along the path
   // returns null if the path is shorter than the specified distance
-  google.maps.Polyline.prototype.GetPointAtDistance = function(metres) {
+  google.maps.Polyline.prototype.GetPointAtDistance = function (metres) {
     // some awkward special cases
-    if (metres == 0) return this.getPath().getAt(0);
+    if (metres === 0) return this.getPath().getAt(0);
     if (metres < 0) return null;
     if (this.getPath().getLength() < 2) return null;
-    var dist=0;
-    var olddist=0;
-    for (var i=1; (i < this.getPath().getLength() && dist < metres); i++) {
+    let dist = 0;
+    let olddist = 0;
+    for (let i = 1; (i < this.getPath().getLength() && dist < metres); i++) {
       olddist = dist;
-      dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
+      dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i - 1));
     }
     if (dist < metres) {
       return null;
     }
-    var p1= this.getPath().getAt(i-2);
-    var p2= this.getPath().getAt(i-1);
-    var m = (metres-olddist)/(dist-olddist);
-    return new google.maps.LatLng( p1.lat() + (p2.lat()-p1.lat())*m, p1.lng() + (p2.lng()-p1.lng())*m);
-  }
+    const p1 = this.getPath().getAt(i - 2);
+    const p2 = this.getPath().getAt(i - 1);
+    const m = (metres - olddist) / (dist - olddist);
+    return new google.maps.LatLng(p1.lat() + (p2.lat() - p1.lat()) * m, p1.lng() +
+    (p2.lng() - p1.lng()) * m);
+  };
 
   // method which returns an array of GLatLngs of points a given interval along the path
-  google.maps.Polyline.prototype.GetPointsAtDistance = function(metres) {
-    var next = metres;
-    var points = [];
+  google.maps.Polyline.prototype.GetPointsAtDistance = function (metres) {
+    let next = metres;
+    const points = [];
     // some awkward special cases
     if (metres <= 0) return points;
-    var dist=0;
-    var olddist=0;
-    for (var i=1; (i < this.getPath().getLength()); i++) {
+    let dist = 0;
+    let olddist = 0;
+    for (var i = 1; (i < this.getPath().getLength()); i++) {
       olddist = dist;
-      dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i-1));
+      dist += this.getPath().getAt(i).distanceFrom(this.getPath().getAt(i - 1));
       while (dist > next) {
-        var p1= this.getPath().getAt(i-1);
-        var p2= this.getPath().getAt(i);
-        var m = (next-olddist)/(dist-olddist);
-        points.push(new google.maps.LatLng( p1.lat() + (p2.lat()-p1.lat())*m, p1.lng() + (p2.lng()-p1.lng())*m));
+        const p1 = this.getPath().getAt(i-1);
+        const p2 = this.getPath().getAt(i);
+        const m = (next - olddist) / (dist - olddist);
+        points.push(new google.maps.LatLng(p1.lat() + (p2.lat()-p1.lat()) * m, p1.lng() +
+        (p2.lng()- p1.lng()) * m));
         next += metres;
       }
     }
     return points;
-  }
+  };
 
   // initiate map
-  var origin_place_id = null;
-  var destination_place_id = null;
-  var travel_mode = google.maps.TravelMode.DRIVING;
+  const origin_place_id = null;
+  const destination_place_id = null;
+  const travel_mode = google.maps.TravelMode.DRIVING;
 
   map = new google.maps.Map(document.getElementById('map'), {
     mapTypeControl: false,
-    center: {lat: 34.0522, lng: -118.2437},
+    center: { lat: 34.0522, lng: -118.2437 },
     zoom: 14,
     disableDefaultUI: true,
   });
 
-  var directionsService = new google.maps.DirectionsService;
-  var directionsDisplay = new google.maps.DirectionsRenderer;
+  const directionsService = new google.maps.DirectionsService;
+  const directionsDisplay = new google.maps.DirectionsRenderer;
   directionsDisplay.setMap(map);
 
-  var origin_input = document.getElementById('origin-input');
-  var destination_input = document.getElementById('destination-input');
+  const origin_input = document.getElementById('origin-input');
+  const destination_input = document.getElementById('destination-input');
 
-  var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
+  const origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
   origin_autocomplete.bindTo('bounds', map);
-  var destination_autocomplete =
-      new google.maps.places.Autocomplete(destination_input);
+  const destination_autocomplete = new google.maps.places.Autocomplete(destination_input);
   destination_autocomplete.bindTo('bounds', map);
 
   function expandViewportToFitPlace(map, place) {
@@ -152,29 +149,19 @@ function initMap() {
     }
 
     directionsService.route({
-      origin: {'placeId': origin_place_id},
-      destination: {'placeId': destination_place_id},
+      origin: { 'placeId': origin_place_id },
+      destination: { 'placeId': destination_place_id },
       travelMode: travel_mode
-    }, function(response, status) {
-
-      console.log(response);
-      // let path = response.routes[0].overview_path.map(function(item) {
-      //   let lat = item.lat();
-      //   let ling = item.lng();
-      //   return new google.maps.LatLng(lat, ling);
-      // });
-      let i = 1;
-      let path = new google.maps.Polyline({
+    }, function (response, status) {
+      const path = new google.maps.Polyline({
         path: response.routes[0].overview_path,
       });
 
-      let length = google.maps.geometry.spherical.computeLength(path.getPath());
-      console.log(length);
+      const length = google.maps.geometry.spherical.computeLength(path.getPath());
+      const remainingDist = length;
+      const result = [];
 
-      let remainingDist = length;
-      let result = [];
-
-      // adds points to map at specific interval
+      // this part adds points to map at specific interval
       // while (remainingDist > 0) {
       //   // result.push(path.GetPointAtDistance(1000*i));
       //   createMarker(map, path.GetPointAtDistance(1000*i), i+" km");
@@ -188,10 +175,9 @@ function initMap() {
       //     title: title
       //     });
       //   }
-      // grabs points at a specified distance into an array
 
+      // grabs points at a specified distance into an array
       points = path.GetPointsAtDistance(1000);
-      console.log(points);
 
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
@@ -202,63 +188,52 @@ function initMap() {
   }
 }
 
-$(document).ready(function() {
+// handles search data and sends form data to server
+$(document).ready(function () {
+  function getInfoCallback(map, content) {
+    const infoWindow = new google.maps.InfoWindow({ content: contentString });
+    return function () {
+      infoWindow.setContent(content);
+      infoWindow.open(map, this);
+    };
+  }
 
-  $("#submit").on("click", function(event) {
+  $('#submit').on('click', function () {
+    const inputEl = $('#search-input');
+    category = inputEl.val();
+    inputEl.val('');
+    points = JSON.stringify(points);
 
-      var inputEl = $("#search-input");
-      category = inputEl.val();
-      inputEl.val('');
-      points = JSON.stringify(points);
-      console.log(points);
+    $.ajax({
+      type: 'POST',
+      url: "/",
+      dataType: "json",
+      data: { category: category, points: points },
+      success: function(data) {
+        for (var i = 0; i < data.length; i++) {
+          let lat = JSON.parse(data[i].location).latitude;
+          let ling = JSON.parse(data[i].location).longitude;
+          let title = data[i].name;
+          let latLing = new google.maps.LatLng(lat, ling);
 
-        $.ajax({
-    	    type: 'POST',
-    	    url: "/",
-    	    dataType: "json",
-    	    data: { category: category, points: points },
-    	    success: function(data) {
-    	    	console.log("data from frontend", data);
+          let contentString =
+          "<div id=infoWindow>"+
+          "<h2>"+data[i].name+"</h2>"+
+          "<img src="+data[i].rating+"><br>"+
+          "<a href="+data[i].url+">Visit the Yelp Page</a>"+
+          "</div>";
 
-    	    	for (var i = 0; i < data.length; i++){
-    	    		// console.log(i);
-    	    		// console.log('long', JSON.parse(data[i].location).latitude);
-    	    		// console.log('lat', JSON.parse(data[i].location).longitude);
-              // console.log('name', data[i].name)
+          const marker = new google.maps.Marker({
+            position: latLing,
+            map: map,
+            title: data[i].name,
+            animation: google.maps.Animation.DROP,
+          });
 
-    	    		let lat = JSON.parse(data[i].location).latitude;
-    	    		let ling = JSON.parse(data[i].location).longitude;
-              let title = data[i].name;
-              let latLing = new google.maps.LatLng(lat, ling);
-
-              let contentString =
-              "<div id=infoWindow>"+
-              "<h2>"+data[i].name+"</h2>"+
-              "<img src="+data[i].rating+"><br>"+
-              "<a href="+data[i].url+">Visit the Yelp Page</a>"+
-              "</div>";
-
-              let marker = new google.maps.Marker({
-                position: latLing,
-                map: map,
-                title: data[i].name,
-                animation: google.maps.Animation.DROP,
-              });
-
-              markersArray.push(marker);
-
-              function getInfoCallback(map, content) {
-                var infoWindow = new google.maps.InfoWindow({ content: contentString });
-                return function() {
-                  infoWindow.setContent(content);
-                  infoWindow.open(map, this);
-                  };
-              }
-
-              google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
-    	    	}
-    	    }
-        });
-
+          markersArray.push(marker);
+          google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
+        }
+      },
     });
+  });
 });
