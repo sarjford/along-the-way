@@ -12,7 +12,6 @@ const request = require('request-promise');
 
 const set_parameters = {};
 
-
 app.use(express.static(path.join(__dirname, '../')));
 app.listen(3000);
 app.use(bodyParser.urlencoded({ extended: true }));

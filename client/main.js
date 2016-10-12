@@ -77,8 +77,8 @@ function initMap() {
   };
 
   // initiate map
-  const origin_place_id = null;
-  const destination_place_id = null;
+  let origin_place_id = null;
+  let destination_place_id = null;
   const travel_mode = google.maps.TravelMode.DRIVING;
 
   map = new google.maps.Map(document.getElementById('map'), {
@@ -109,7 +109,7 @@ function initMap() {
     }
   }
 
-  // autocompletes origin input
+  // autocomplete origin input
   origin_autocomplete.addListener('place_changed', function() {
     var place = origin_autocomplete.getPlace();
     if (!place.geometry) {
@@ -125,7 +125,7 @@ function initMap() {
           directionsService, directionsDisplay);
   });
 
-  // autocompletes destination input
+  // autocomplete destination input
   destination_autocomplete.addListener('place_changed', function() {
     var place = destination_autocomplete.getPlace();
     if (!place.geometry) {
@@ -134,8 +134,7 @@ function initMap() {
     }
     expandViewportToFitPlace(map, place);
     clearMarkers();
-    // If the place has a geometry, store its place ID and route if we have
-    // the other place ID
+    // If the place has a geometry, store its place ID and route if we have the other place ID
     destination_place_id = place.place_id;
     route(origin_place_id, destination_place_id, travel_mode,
           directionsService, directionsDisplay);
@@ -143,10 +142,8 @@ function initMap() {
 
   // create the route
   function route(origin_place_id, destination_place_id, travel_mode,
-                 directionsService, directionsDisplay) {
-    if (!origin_place_id || !destination_place_id) {
-      return;
-    }
+    directionsService, directionsDisplay) {
+    if (!origin_place_id || !destination_place_id) return;
 
     directionsService.route({
       origin: { 'placeId': origin_place_id },
@@ -191,13 +188,13 @@ function initMap() {
 // handles search data and sends form data to server
 $(document).ready(function () {
   function getInfoCallback(map, content) {
-    const infoWindow = new google.maps.InfoWindow({ content: contentString });
+    const infoWindow = new google.maps.InfoWindow({ content: content });
     return function () {
       infoWindow.setContent(content);
       infoWindow.open(map, this);
     };
   }
-
+  // grabs data from form
   $('#submit').on('click', function () {
     const inputEl = $('#search-input');
     category = inputEl.val();
