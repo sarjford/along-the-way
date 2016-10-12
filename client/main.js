@@ -76,168 +76,78 @@ function initMap() {
     return points;
   };
 
+  // makes map black and white
   let styledMapType = new google.maps.StyledMapType(
     [
-  {
-    "elementType": "geometry",
-    "stylers": [
       {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.icon",
-    "stylers": [
+        "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }]
+      },
       {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "elementType": "labels.icon", "stylers": [{ "visibility": "off" }]
+      },
       {
-        "color": "#616161"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.stroke",
-    "stylers": [
+        "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }]
+      },
       {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.land_parcel",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }]
+      },
       {
-        "color": "#bdbdbd"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "administrative.land_parcel", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#bdbdbd" }]
+      },
       {
-        "color": "#eeeeee"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "featureType": "poi", "elementType": "geometry",
+        "stylers": [{ "color": "#eeeeee" }]
+      },
       {
-        "color": "#757575"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "poi", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
       {
-        "color": "#e5e5e5"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "featureType": "poi.park", "elementType": "geometry",
+        "stylers": [{ "color": "#e5e5e5" }]
+      },
       {
-        "color": "#9e9e9e"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "poi.park", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#9e9e9e" }]
+      },
       {
-        "color": "#ffffff"
-      }
-    ]
-  },
-  {
-    "featureType": "road.arterial",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "featureType": "road", "elementType": "geometry",
+        "stylers": [{ "color": "#ffffff" }]
+      },
       {
-        "color": "#757575"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "road.arterial", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#757575" }]
+      },
       {
-        "color": "#dadada"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "featureType": "road.highway", "elementType": "geometry",
+        "stylers": [{ "color": "#dadada" }]
+      },
       {
-        "color": "#616161"
-      }
-    ]
-  },
-  {
-    "featureType": "road.local",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "featureType": "road.highway", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#616161" }]
+      },
       {
-        "color": "#9e9e9e"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "road.local", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#9e9e9e" }]
+      },
       {
-        "color": "#e5e5e5"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "transit.line", "elementType": "geometry",
+        "stylers": [{ "color": "#e5e5e5" }]
+      },
       {
-        "color": "#eeeeee"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "geometry",
-    "stylers": [
+        "featureType": "transit.station", "elementType": "geometry",
+        "stylers": [{ "color": "#eeeeee" }]
+      },
       {
-        "color": "#c9c9c9"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "labels.text.fill",
-    "stylers": [
+        "featureType": "water", "elementType": "geometry",
+        "stylers": [{ "color": "#c9c9c9" }]
+      },
       {
-        "color": "#9e9e9e"
+        "featureType": "water", "elementType": "labels.text.fill",
+        "stylers": [{ "color": "#9e9e9e" }]
       }
-    ]
-  }
-],
-{ name: 'Styled Map' });
+    ], { name: 'Styled Map' });
 
   // initiate map
   let origin_place_id = null;
@@ -260,7 +170,8 @@ function initMap() {
   map.setMapTypeId('styled_map');
 
   const directionsService = new google.maps.DirectionsService;
-  const directionsDisplay = new google.maps.DirectionsRenderer;
+  // creates directions renderer and changes color of polyline
+  const directionsDisplay = new google.maps.DirectionsRenderer({ polylineOptions: { strokeColor: '#ff0000' } });
   directionsDisplay.setMap(map);
 
   const origin_input = document.getElementById('origin-input');
@@ -272,9 +183,8 @@ function initMap() {
   destination_autocomplete.bindTo('bounds', map);
 
   function expandViewportToFitPlace(map, place) {
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
+    if (place.geometry.viewport) map.fitBounds(place.geometry.viewport);
+    else {
       map.setCenter(place.geometry.location);
       map.setZoom(17);
     }
@@ -282,7 +192,7 @@ function initMap() {
 
   // autocomplete origin input
   origin_autocomplete.addListener('place_changed', function() {
-    var place = origin_autocomplete.getPlace();
+    const place = origin_autocomplete.getPlace();
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
@@ -297,7 +207,7 @@ function initMap() {
   });
   // autocomplete destination input box
   destination_autocomplete.addListener('place_changed', function() {
-    var place = destination_autocomplete.getPlace();
+    const place = destination_autocomplete.getPlace();
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
@@ -316,9 +226,9 @@ function initMap() {
     if (!origin_place_id || !destination_place_id) return;
 
     directionsService.route({
-      origin: { 'placeId': origin_place_id },
-      destination: { 'placeId': destination_place_id },
-      travelMode: travel_mode
+      origin: { placeId: origin_place_id },
+      destination: { placeId: destination_place_id },
+      travelMode: travel_mode,
     }, function (response, status) {
       const path = new google.maps.Polyline({
         path: response.routes[0].overview_path,
@@ -346,11 +256,8 @@ function initMap() {
       // grabs points at a specified distance into an array
       points = path.GetPointsAtDistance(1000);
 
-      if (status === google.maps.DirectionsStatus.OK) {
-        directionsDisplay.setDirections(response);
-      } else {
-        window.alert('Directions request failed due to ' + status);
-      }
+      if (status === google.maps.DirectionsStatus.OK) directionsDisplay.setDirections(response);
+      else window.alert('Directions request failed due to ' + status);
     });
   }
 }
@@ -397,6 +304,7 @@ $(document).ready(function () {
             map: map,
             title: data[i].name,
             animation: google.maps.Animation.DROP,
+            icon: 'http://www.tritthart.info/wp-content/themes/theme53016/images/marker2.png',
           });
 
           markersArray.push(marker);
