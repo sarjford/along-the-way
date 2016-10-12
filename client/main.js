@@ -171,7 +171,7 @@ function initMap() {
 
   const directionsService = new google.maps.DirectionsService;
   // creates directions renderer and changes color of polyline
-  const directionsDisplay = new google.maps.DirectionsRenderer({ polylineOptions: { strokeColor: '#ff0000' } });
+  const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, polylineOptions: { strokeColor: '#ff0000' } });
   directionsDisplay.setMap(map);
 
   const origin_input = document.getElementById('origin-input');
@@ -299,12 +299,18 @@ $(document).ready(function () {
           "<a href="+data[i].url+">Visit the Yelp Page</a>"+
           "</div>";
 
+          // define icon settings (size and image)
+          let icon = {
+            scaledSize: new google.maps.Size(50, 50),
+            url: '../assets/marker1.svg',
+          };
+          // create markers
           const marker = new google.maps.Marker({
             position: latLing,
             map: map,
             title: data[i].name,
             animation: google.maps.Animation.DROP,
-            icon: 'http://www.tritthart.info/wp-content/themes/theme53016/images/marker2.png',
+            icon: icon,
           });
 
           markersArray.push(marker);
