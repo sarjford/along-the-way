@@ -76,6 +76,169 @@ function initMap() {
     return points;
   };
 
+  let styledMapType = new google.maps.StyledMapType(
+    [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#bdbdbd"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dadada"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#c9c9c9"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  }
+],
+{ name: 'Styled Map' });
+
   // initiate map
   let origin_place_id = null;
   let destination_place_id = null;
@@ -86,7 +249,15 @@ function initMap() {
     center: { lat: 34.0522, lng: -118.2437 },
     zoom: 14,
     disableDefaultUI: true,
+    mapTypeControlOptions: {
+      mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
+          'styled_map'],
+    },
   });
+
+  // Associate the styled map with the MapTypeId and set it to display
+  map.mapTypes.set('styled_map', styledMapType);
+  map.setMapTypeId('styled_map');
 
   const directionsService = new google.maps.DirectionsService;
   const directionsDisplay = new google.maps.DirectionsRenderer;
@@ -124,8 +295,7 @@ function initMap() {
     route(origin_place_id, destination_place_id, travel_mode,
           directionsService, directionsDisplay);
   });
-
-  // autocomplete destination input
+  // autocomplete destination input box
   destination_autocomplete.addListener('place_changed', function() {
     var place = destination_autocomplete.getPlace();
     if (!place.geometry) {
@@ -185,8 +355,9 @@ function initMap() {
   }
 }
 
-// handles search data and sends form data to server
+// handles search data and sends form data from front to server
 $(document).ready(function () {
+  // callback used to create info window on each point
   function getInfoCallback(map, content) {
     const infoWindow = new google.maps.InfoWindow({ content: content });
     return function () {
@@ -194,13 +365,14 @@ $(document).ready(function () {
       infoWindow.open(map, this);
     };
   }
-  // grabs data from form
+  // grabs data from third entry form area
   $('#submit').on('click', function () {
     const inputEl = $('#search-input');
     category = inputEl.val();
     inputEl.val('');
     points = JSON.stringify(points);
-
+    // makes ajax call sending data from front end to server
+    // success function receives yelp data back as response
     $.ajax({
       type: 'POST',
       url: "/",
