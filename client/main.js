@@ -171,7 +171,7 @@ function initMap() {
 
   const directionsService = new google.maps.DirectionsService;
   // creates directions renderer and changes color of polyline
-  const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, polylineOptions: { strokeColor: '#ff0000' } });
+  const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, polylineOptions: { strokeColor: '#E54D42' } });
   directionsDisplay.setMap(map);
 
   const origin_input = document.getElementById('origin-input');
@@ -276,7 +276,6 @@ $(document).ready(function () {
   $('#submit').on('click', function () {
     const inputEl = $('#search-input');
     category = inputEl.val();
-    inputEl.val('');
     points = JSON.stringify(points);
     // makes ajax call sending data from front end to server
     // success function receives yelp data back as response
