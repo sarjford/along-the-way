@@ -8,26 +8,29 @@
   </head>
 
   <body>
+    <div id="wrapper">
     <div id="nav-panel">
-      <div id="text-container">
-        <h1>Along the Way</h1>
-        <p>Find Yelp results along a route instead of at a single point</p>
-        <div id="search-container">
-          <h2>STEP 1</h2>
-          <h3>Map your route</h3>
-          <input id="origin-input" class="controls" type="text" placeholder="Enter an origin">
-          <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
-          <h2>STEP 2</h2>
-          <h3>Find results along that route</h3>
-          <input id="search-input" class="controls" type="text" placeholder="Enter search term">
-          <a href="#" name="Submit Button" id="submit">SEARCH</a>
+        <div id="text-container">
+          <h1>Along the Way</h1>
+          <p>Find Yelp results along a route instead of at a single point</p>
+          <div id="search-container">
+            <h3><i class="fa fa-location-arrow fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Map your route</h3>
+            <input id="origin-input" class="controls" type="text" placeholder="Enter an origin">
+            <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
+            <h3><i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Find results on route</h3>
+            <input id="search-input" class="controls" type="text" placeholder="Enter search term">
+            <a href="#" name="Submit Button" class="submit button">SEARCH</a>
+            <a href="#" name="Clear Button" class="clear button">CLEAR FIELDS</a>
+          </div>
         </div>
       </div>
-      </div>
       <div id="map"></div>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeS3OBFneCQzOrgiZfiCCDOfS9R2Kutaw&libraries=places&callback=initMap" async defer></script>
-      <script src="client/main.js" type="text/javascript"></script>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeS3OBFneCQzOrgiZfiCCDOfS9R2Kutaw&libraries=places&callback=initMap" async defer></script>
+    <script src="https://use.fontawesome.com/0b16edf27c.js"></script>
+    <script src="client/main.js" type="text/javascript"></script>
+
       <!-- <script>
         App({
           root: '#search-container',

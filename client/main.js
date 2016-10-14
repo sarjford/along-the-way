@@ -273,7 +273,7 @@ $(document).ready(function () {
     };
   }
   // grabs data from third entry form area
-  $('#submit').on('click', function () {
+  $('.submit').on('click', function () {
     const inputEl = $('#search-input');
     category = inputEl.val();
     points = JSON.stringify(points);
@@ -317,5 +317,10 @@ $(document).ready(function () {
         }
       },
     });
+  });
+  $('.clear').on('click', function () {
+    $('#origin-input').val('');
+    $('#destination-input').val('');
+    $('#search-input').val('');
   });
 });
