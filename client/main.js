@@ -4,7 +4,7 @@ var category;
 var markers;
 let markersArray = [];
 
-// clears search markers from the map
+// helper function that clears search markers from the map
 function clearMarkers() {
   for (let i = 0; i < markersArray.length; i++) {
     markersArray[i].setMap(null);
@@ -12,6 +12,7 @@ function clearMarkers() {
   markersArray.length = 0;
 }
 
+// primary function that creates google map
 function initMap() {
   // method that calculates distance from a specific point
   google.maps.LatLng.prototype.distanceFrom = function (newLatLng) {
@@ -76,7 +77,7 @@ function initMap() {
     return points;
   };
 
-  // makes map black and white
+  // sets map styling setting to appear black and white
   let styledMapType = new google.maps.StyledMapType(
     [
       {
@@ -160,8 +161,7 @@ function initMap() {
     zoom: 14,
     disableDefaultUI: true,
     mapTypeControlOptions: {
-      mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
-          'styled_map'],
+      mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
     },
   });
 
@@ -189,7 +189,6 @@ function initMap() {
       map.setZoom(17);
     }
   }
-
   // autocomplete origin input
   origin_autocomplete.addListener('place_changed', function() {
     const place = origin_autocomplete.getPlace();
@@ -238,7 +237,8 @@ function initMap() {
       const remainingDist = length;
       const result = [];
 
-      // this part adds points to map at specific interval
+      // this part adds points to map at specific interval; want to save it even though not
+      // neccessary to app
       // while (remainingDist > 0) {
       //   // result.push(path.GetPointAtDistance(1000*i));
       //   createMarker(map, path.GetPointAtDistance(1000*i), i+" km");
@@ -260,30 +260,27 @@ function initMap() {
       else window.alert('Directions request failed due to ' + status);
     });
   }
-
-
 }
 
 // handles search data and sends form data from front to server
 $(document).ready(function () {
-
   // callback used to create info window on each point
   function getInfoCallback(map, content) {
     const infoWindow = new google.maps.InfoWindow({ content: content });
     return function () {
       infoWindow.setContent(content);
       infoWindow.open(map, this);
+
+      // below code overrides some of the goole map api info window styling
       var iwOuter = $('.gm-style-iw');
       var iwBackground = iwOuter.prev();
-      // iwOuter.parent().css({'height' : '350px', 'width' : '350px'});
-      // iwOuter.css({'position' : 'relative', 'height' : '302px !important', 'width' : '230px important!'});
       iwBackground.children(':nth-child(2)').css({'display' : 'none'});
       iwBackground.children(':nth-child(4)').css({'display' : 'none'});
-
-
+      // re-positions the close button
+      iwOuter.next().css({ right: '40px', top: '60px' });
     };
   }
-  // grabs data from third entry form area
+  // grabs data from third entry form area ('enter search term')
   $('.submit').on('click', function () {
     const inputEl = $('#search-input');
     category = inputEl.val();
@@ -298,19 +295,19 @@ $(document).ready(function () {
       success: function(data) {
         console.log(data);
         for (var i = 0; i < data.length; i++) {
-          let lat = JSON.parse(data[i].location).latitude;
-          let ling = JSON.parse(data[i].location).longitude;
-          let title = data[i].name;
-          let latLing = new google.maps.LatLng(lat, ling);
+          const lat = JSON.parse(data[i].location).latitude;
+          const ling = JSON.parse(data[i].location).longitude;
+          const latLing = new google.maps.LatLng(lat, ling);
 
+          // html content for info windows
           let contentString =
           "<div id='infoWindow'>"+
           "<div id='windowBody'>"+
           "<div id='heading'>"+data[i].name+"</div>"+
+          "<p>CATEGORY: "+data[i].category+"</p>"+
           "<img src="+data[i].rating+"><br>"+
-          "<p>"+data[i].category+"</p><br>"+
-          "<img src="+data[i].image+"><br>"+
-          "<a href="+data[i].url+">Visit the Yelp Page</a>"+
+          "<img src="+data[i].image+">"+
+          "<a class='yelpPage' href="+data[i].url+">Visit Page</a>"+
           "</div></div>";
 
           // define icon settings (size and image)
@@ -318,7 +315,7 @@ $(document).ready(function () {
             scaledSize: new google.maps.Size(50, 50),
             url: '../assets/marker1.svg',
           };
-          // create markers
+          // create markers with specified settings
           const marker = new google.maps.Marker({
             position: latLing,
             map: map,
@@ -326,21 +323,17 @@ $(document).ready(function () {
             animation: google.maps.Animation.DROP,
             icon: icon,
           });
-
           markersArray.push(marker);
           google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
         }
       },
     });
   });
+
+  // function for 'clear' button -- clears fields
   $('.clear').on('click', function () {
     $('#origin-input').val('');
     $('#destination-input').val('');
     $('#search-input').val('');
   });
-
-  // google.maps.event.addDomListener(infowindow, 'domready', function() {
-  //
-  // });
-
 });

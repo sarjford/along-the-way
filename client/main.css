@@ -1,11 +1,58 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:light|Open+Sans:regular,light');
 
+/* global components */
 .body {
   position: relative;
   margin: 0;
   height: 100%;
 }
 #wrapper { position: relative; }
+#map { height: 100vh; width: 100%; }
+
+/*  BEGIN NAVIGATION PANEL STYLING */
+#nav-panel {
+  height: 685px;
+  background-color: #b42318;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  position: absolute;
+  top:10px;
+  left: 10px;
+  z-index: 99;
+  opacity: 0.9;
+  width: 400px;
+}
+#text-container {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 60px;
+}
+/* title */
+h1 {
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  font-size: 1.7em;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: lighter;
+}
+/* explanation */
+p {
+  font-weight: 100;
+  letter-spacing: .1em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+/* steps */
+h3 {
+  font-size: 1em;
+  font-weight: 100;
+  margin-top: 50px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
 /* origin and destination input boxes */
 .controls {
   margin-bottom: 20px;
@@ -29,45 +76,10 @@
   padding: 0 11px 0 13px;
   text-overflow: ellipsis;
 }
-
 #origin-input:focus,
 #destination-input:focus,
 #search-input:focus {
   border-color: #ed8078;
-}
-#nav-panel {
-  height: 685px;
-  background-color: #b42318;
-  color: white;
-  font-family: 'Open Sans', sans-serif;
-  position: absolute;
-  top:10px;
-  left: 10px;
-  z-index: 99;
-  opacity: 0.9;
-  width: 400px;
-}
-h1 {
-  text-transform: uppercase;
-  letter-spacing: .3em;
-  font-size: 1.7em;
-  margin-bottom: 20px;
-  text-align: center;
-  font-family: 'Roboto', sans-serif;
-  font-weight: lighter;
-}
-p {
-  font-weight: 100;
-  letter-spacing: .1em;
-  margin-bottom: 20px;
-  text-align: center;
-}
-h3 {
-  font-size: 1em;
-  font-weight: 100;
-  margin-top: 50px;
-  text-transform: uppercase;
-  letter-spacing: .1em;
 }
 .button {
   border: solid 1px white;
@@ -81,44 +93,35 @@ h3 {
   letter-spacing: .3em;
   margin-top: 50px;
 }
-.clear {
-  margin-top: 20px;
+.button:hover {
+  background-color: white;
+  color: #b42318;
+  opacity: .8;
 }
-#text-container {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 50px;
-}
-#map {
-  height: 100vh;
-  width: 100%;
-}
+.clear { margin-top: 20px; }
+
+/* BEGIN INFO WINDOW STYLING */
+/* google maps class for info window body with overwritten styling */
 .gm-style-iw {
-   /*width: 100%;*/
    top: auto !important;*/
    left: auto !important;
    bottom: 0 !important;
    background-color: #fff;
-   /*box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);*/
-   /*border: 1px solid rgba(72, 181, 233, 0.6);*/
-   /*border-radius: 2px 2px 0 0;*/
-   height: 300px !important;
+   height: 325px !important;
    width: 300px !important;
 }
 .gm-style-iw > div {
   max-width: 300px !important;
   width: 100% !important;
 }
+/* containers (infowWindow and windowBody)*/
 #infoWindow {
   padding: 0;
   text-align: center;
   font-family: 'Open Sans', sans-serif;
 }
-#windowBody {
-  height: 100%;
-  width: 100%;
-}
+#windowBody { height: 100%; width: 100%; }
+
 #heading {
   font-family: 'Roboto', sans-serif;
   font-weight: lighter;
@@ -131,11 +134,27 @@ h3 {
   margin: 1px;
   border-radius: 2px 2px 0 0;
 }
+/* category text */
+p { font-weight: 100; letter-spacing: .1em; }
 
-p {
-  font-weight: 100;
-  letter-spacing: .1em;
+img { margin-bottom: 10px; }
+
+/* yelp page navigation button */
+.yelpPage {
+  border: solid 1px #b42318;
+  width: 60%;
+  padding: 5px 0;
+  text-align: center;
+  color: #b42318;
+  text-decoration: none;
+  display: block;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
 }
-img {
-  margin-bottom: 10px;
+.yelpPage:hover {
+  background-color: #b42318;
+  color: white;
 }
