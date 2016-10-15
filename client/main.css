@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:regular,light');
+@import url('https://fonts.googleapis.com/css?family=Roboto:light|Open+Sans:regular,light');
 
 .body {
   position: relative;
@@ -22,7 +22,7 @@
 #destination-input,
 #search-input {
   background-color: #fff;
-  font-family: Roboto;
+  font-family: 'Roboto', sans-serif;
   font-size: 1em;
   font-weight: 300;
   width: 100%;
@@ -38,7 +38,6 @@
 #nav-panel {
   height: 685px;
   background-color: #b42318;
-  float: left;
   color: white;
   font-family: 'Open Sans', sans-serif;
   position: absolute;
@@ -51,9 +50,11 @@
 h1 {
   text-transform: uppercase;
   letter-spacing: .3em;
-  font-size: 1.6em;
+  font-size: 1.7em;
   margin-bottom: 20px;
   text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: lighter;
 }
 p {
   font-weight: 100;
@@ -67,10 +68,6 @@ h3 {
   margin-top: 50px;
   text-transform: uppercase;
   letter-spacing: .1em;
-}
-i {
-  margin-left: auto;
-  margin-right: auto;
 }
 .button {
   border: solid 1px white;
@@ -96,5 +93,49 @@ i {
 #map {
   height: 100vh;
   width: 100%;
-  float: right;
+}
+.gm-style-iw {
+   /*width: 100%;*/
+   top: auto !important;*/
+   left: auto !important;
+   bottom: 0 !important;
+   background-color: #fff;
+   /*box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);*/
+   /*border: 1px solid rgba(72, 181, 233, 0.6);*/
+   /*border-radius: 2px 2px 0 0;*/
+   height: 300px !important;
+   width: 300px !important;
+}
+.gm-style-iw > div {
+  max-width: 300px !important;
+  width: 100% !important;
+}
+#infoWindow {
+  padding: 0;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+#windowBody {
+  height: 100%;
+  width: 100%;
+}
+#heading {
+  font-family: 'Roboto', sans-serif;
+  font-weight: lighter;
+  font-size: 1.3em;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  padding: 10px;
+  background-color: #b42318;
+  color: white;
+  margin: 1px;
+  border-radius: 2px 2px 0 0;
+}
+
+p {
+  font-weight: 100;
+  letter-spacing: .1em;
+}
+img {
+  margin-bottom: 10px;
 }

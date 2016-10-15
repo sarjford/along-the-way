@@ -260,16 +260,27 @@ function initMap() {
       else window.alert('Directions request failed due to ' + status);
     });
   }
+
+
 }
 
 // handles search data and sends form data from front to server
 $(document).ready(function () {
+
   // callback used to create info window on each point
   function getInfoCallback(map, content) {
     const infoWindow = new google.maps.InfoWindow({ content: content });
     return function () {
       infoWindow.setContent(content);
       infoWindow.open(map, this);
+      var iwOuter = $('.gm-style-iw');
+      var iwBackground = iwOuter.prev();
+      // iwOuter.parent().css({'height' : '350px', 'width' : '350px'});
+      // iwOuter.css({'position' : 'relative', 'height' : '302px !important', 'width' : '230px important!'});
+      iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+      iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+
     };
   }
   // grabs data from third entry form area
@@ -285,6 +296,7 @@ $(document).ready(function () {
       dataType: "json",
       data: { category: category, points: points },
       success: function(data) {
+        console.log(data);
         for (var i = 0; i < data.length; i++) {
           let lat = JSON.parse(data[i].location).latitude;
           let ling = JSON.parse(data[i].location).longitude;
@@ -292,11 +304,14 @@ $(document).ready(function () {
           let latLing = new google.maps.LatLng(lat, ling);
 
           let contentString =
-          "<div id=infoWindow>"+
-          "<h2>"+data[i].name+"</h2>"+
+          "<div id='infoWindow'>"+
+          "<div id='windowBody'>"+
+          "<div id='heading'>"+data[i].name+"</div>"+
           "<img src="+data[i].rating+"><br>"+
+          "<p>"+data[i].category+"</p><br>"+
+          "<img src="+data[i].image+"><br>"+
           "<a href="+data[i].url+">Visit the Yelp Page</a>"+
-          "</div>";
+          "</div></div>";
 
           // define icon settings (size and image)
           let icon = {
@@ -323,4 +338,9 @@ $(document).ready(function () {
     $('#destination-input').val('');
     $('#search-input').val('');
   });
+
+  // google.maps.event.addDomListener(infowindow, 'domready', function() {
+  //
+  // });
+
 });

@@ -39,7 +39,9 @@ app.post('/', function (req, res) {
         name: item.businesses[0].name,
         url: item.businesses[0].url,
         location: JSON.stringify(item.businesses[0].location.coordinate),
-      })
+        image: item.businesses[0].image_url,
+        category: item.businesses[0].categories[0][0],
+      });
     });
   // sends yelp results to front end
   }).then(function () {
