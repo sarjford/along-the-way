@@ -1,4 +1,7 @@
-// chai.should();
+var $ = require('jquery');
+
+var myCode = require('../client/main');
+
 var expect = require('chai').expect
 
 describe('Mocha & Chai works', () => {
@@ -7,20 +10,10 @@ describe('Mocha & Chai works', () => {
   });
 });
 
-// describe('App', function() {
-//   it('should set the background color', function() {
-//     var div = document.createElement('div');
-//
-//     App({
-//       root: div,
-//       background: 'green'
-//     });
-//     expect(div.style.background).to.equal('green');
-//   });
-// });
-
-describe('googRequest', function() {
-  it('should exist', function() {
-    expect('googRequest').to.exist;
+describe('clearMarkers function', function() {
+  it('should clear markers from array', function() {
+    var markersArray = [1,2,3];
+    myCode.clearMarkers();
+    expect(markersArray.length).to.equal(0);
   });
 });

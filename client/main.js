@@ -2,15 +2,10 @@ var map;
 var points;
 var category;
 var markers;
-let markersArray = [];
+var markersArray = [];
 
-// helper function that clears search markers from the map
-function clearMarkers() {
-  for (let i = 0; i < markersArray.length; i++) {
-    markersArray[i].setMap(null);
-  }
-  markersArray.length = 0;
-}
+// added to run tests
+var $ = require("jquery");
 
 // primary function that creates google map
 function initMap() {
@@ -79,8 +74,7 @@ function initMap() {
 
   // sets map styling setting to appear black and white
   let styledMapType = new google.maps.StyledMapType(
-    [
-      {
+    [{
         "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }]
       },
       {
@@ -262,78 +256,91 @@ function initMap() {
   }
 }
 
-// handles search data and sends form data from front to server
-$(document).ready(function () {
-  // callback used to create info window on each point
-  function getInfoCallback(map, content) {
-    const infoWindow = new google.maps.InfoWindow({ content: content });
-    return function () {
-      infoWindow.setContent(content);
-      infoWindow.open(map, this);
-
-      // below code overrides some of the goole map api info window styling
-      var iwOuter = $('.gm-style-iw');
-      var iwBackground = iwOuter.prev();
-      iwBackground.children(':nth-child(2)').css({'display' : 'none'});
-      iwBackground.children(':nth-child(4)').css({'display' : 'none'});
-      // re-positions the close button
-      iwOuter.next().css({ right: '40px', top: '60px' });
-    };
+// helper function that clears search markers from the map
+function clearMarkers() {
+  for (let i = 0; i < markersArray.length; i++) {
+    markersArray[i].setMap(null);
   }
-  // grabs data from third entry form area ('enter search term')
-  $('.submit').on('click', function () {
-    const inputEl = $('#search-input');
-    category = inputEl.val();
-    points = JSON.stringify(points);
-    // makes ajax call sending data from front end to server
-    // success function receives yelp data back as response
-    $.ajax({
-      type: 'POST',
-      url: "/",
-      dataType: "json",
-      data: { category: category, points: points },
-      success: function(data) {
-        console.log(data);
-        for (var i = 0; i < data.length; i++) {
-          const lat = JSON.parse(data[i].location).latitude;
-          const ling = JSON.parse(data[i].location).longitude;
-          const latLing = new google.maps.LatLng(lat, ling);
+  markersArray.length = 0;
+}
 
-          // html content for info windows
-          let contentString =
-          "<div id='infoWindow'>"+
-          "<div id='windowBody'>"+
-          "<div id='heading'>"+data[i].name+"</div>"+
-          "<p>CATEGORY: "+data[i].category+"</p>"+
-          "<img src="+data[i].rating+"><br>"+
-          "<img src="+data[i].image+">"+
-          "<a class='yelpPage' href="+data[i].url+">Visit Page</a>"+
-          "</div></div>";
+// // handles search data and sends form data from front to server
+// $(document).ready(function () {
+//   // callback used to create info window on each point
+//   function getInfoCallback(map, content) {
+//     const infoWindow = new google.maps.InfoWindow({ content: content });
+//     return function () {
+//       infoWindow.setContent(content);
+//       infoWindow.open(map, this);
+//
+//       // below code overrides some of the google map api info window styling
+//       var iwOuter = $('.gm-style-iw');
+//       var iwBackground = iwOuter.prev();
+//       iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+//       iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+//       // re-positions the close button
+//       iwOuter.next().css({ right: '40px', top: '60px' });
+//     };
+//   }
+//   // grabs data from third entry form area ('enter search term')
+//   $('.submit').on('click', function () {
+//     const inputEl = $('#search-input');
+//     category = inputEl.val();
+//     points = JSON.stringify(points);
+//     // makes ajax call sending data from front end to server
+//     // success function receives yelp data back as response
+//     $.ajax({
+//       type: 'POST',
+//       url: "/",
+//       dataType: "json",
+//       data: { category: category, points: points },
+//       success: function(data) {
+//         console.log(data);
+//         for (var i = 0; i < data.length; i++) {
+//           const lat = JSON.parse(data[i].location).latitude;
+//           const ling = JSON.parse(data[i].location).longitude;
+//           const latLing = new google.maps.LatLng(lat, ling);
+//
+//           // html content for info windows
+//           let contentString =
+//           "<div id='infoWindow'>"+
+//           "<div id='windowBody'>"+
+//           "<div id='heading'>"+data[i].name+"</div>"+
+//           "<p>CATEGORY: "+data[i].category+"</p>"+
+//           "<img src="+data[i].rating+"><br>"+
+//           "<img src="+data[i].image+">"+
+//           "<a class='yelpPage' href="+data[i].url+">Visit Page</a>"+
+//           "</div></div>";
+//
+//           // define icon settings (size and image)
+//           let icon = {
+//             scaledSize: new google.maps.Size(50, 50),
+//             url: '../assets/marker1.svg',
+//           };
+//           // create markers with specified settings
+//           const marker = new google.maps.Marker({
+//             position: latLing,
+//             map: map,
+//             title: data[i].name,
+//             animation: google.maps.Animation.DROP,
+//             icon: icon,
+//           });
+//           markersArray.push(marker);
+//           google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
+//         }
+//       },
+//     });
+//   });
+//
+//   // function for 'clear' button -- clears fields
+//   $('.clear').on('click', function () {
+//     $('#origin-input').val('');
+//     $('#destination-input').val('');
+//     $('#search-input').val('');
+//   });
+// });
 
-          // define icon settings (size and image)
-          let icon = {
-            scaledSize: new google.maps.Size(50, 50),
-            url: '../assets/marker1.svg',
-          };
-          // create markers with specified settings
-          const marker = new google.maps.Marker({
-            position: latLing,
-            map: map,
-            title: data[i].name,
-            animation: google.maps.Animation.DROP,
-            icon: icon,
-          });
-          markersArray.push(marker);
-          google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
-        }
-      },
-    });
-  });
-
-  // function for 'clear' button -- clears fields
-  $('.clear').on('click', function () {
-    $('#origin-input').val('');
-    $('#destination-input').val('');
-    $('#search-input').val('');
-  });
-});
+if (typeof exports !== 'undefined') {
+    exports.clearMakers = clearMarkers;
+}
+// export default clearMarkers;
