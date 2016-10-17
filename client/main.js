@@ -4,9 +4,6 @@ var category;
 var markers;
 var markersArray = [];
 
-// added to run tests
-var $ = require("jquery");
-
 // primary function that creates google map
 function initMap() {
   // method that calculates distance from a specific point
@@ -72,75 +69,26 @@ function initMap() {
     return points;
   };
 
-  // sets map styling setting to appear black and white
+  // sets map styling to appear black and white instead of default google map colors
   let styledMapType = new google.maps.StyledMapType(
-    [{
-        "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }]
-      },
-      {
-        "elementType": "labels.icon", "stylers": [{ "visibility": "off" }]
-      },
-      {
-        "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }]
-      },
-      {
-        "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }]
-      },
-      {
-        "featureType": "administrative.land_parcel", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#bdbdbd" }]
-      },
-      {
-        "featureType": "poi", "elementType": "geometry",
-        "stylers": [{ "color": "#eeeeee" }]
-      },
-      {
-        "featureType": "poi", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#757575" }]
-      },
-      {
-        "featureType": "poi.park", "elementType": "geometry",
-        "stylers": [{ "color": "#e5e5e5" }]
-      },
-      {
-        "featureType": "poi.park", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#9e9e9e" }]
-      },
-      {
-        "featureType": "road", "elementType": "geometry",
-        "stylers": [{ "color": "#ffffff" }]
-      },
-      {
-        "featureType": "road.arterial", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#757575" }]
-      },
-      {
-        "featureType": "road.highway", "elementType": "geometry",
-        "stylers": [{ "color": "#dadada" }]
-      },
-      {
-        "featureType": "road.highway", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#616161" }]
-      },
-      {
-        "featureType": "road.local", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#9e9e9e" }]
-      },
-      {
-        "featureType": "transit.line", "elementType": "geometry",
-        "stylers": [{ "color": "#e5e5e5" }]
-      },
-      {
-        "featureType": "transit.station", "elementType": "geometry",
-        "stylers": [{ "color": "#eeeeee" }]
-      },
-      {
-        "featureType": "water", "elementType": "geometry",
-        "stylers": [{ "color": "#c9c9c9" }]
-      },
-      {
-        "featureType": "water", "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#9e9e9e" }]
+    [{ "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] },
+      { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
+      { "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
+      { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }] },
+      { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#bdbdbd" }] },
+      { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
+      { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
+      { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
+      { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
+      { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] },
+      { "featureType": "road.arterial", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
+      { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#dadada" }] },
+      { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
+      { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
+      { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
+      { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
+      { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#c9c9c9" }] },
+      { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }]
       }
     ], { name: 'Styled Map' });
 
@@ -158,11 +106,14 @@ function initMap() {
       mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
     },
   });
+  // recenters map to accommodate for red search box
+  map.panBy(-275, 0);
 
-  // Associate the styled map with the MapTypeId and set it to display
+  // associate the styled map with the MapTypeId (b&w map) and set it to display
   map.mapTypes.set('styled_map', styledMapType);
   map.setMapTypeId('styled_map');
 
+  // ****  Begin code for directions handling  *********
   const directionsService = new google.maps.DirectionsService;
   // creates directions renderer and changes color of polyline
   const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, polylineOptions: { strokeColor: '#E54D42' } });
@@ -176,14 +127,14 @@ function initMap() {
   const destination_autocomplete = new google.maps.places.Autocomplete(destination_input);
   destination_autocomplete.bindTo('bounds', map);
 
-  function expandViewportToFitPlace(map, place) {
-    if (place.geometry.viewport) map.fitBounds(place.geometry.viewport);
+  function expandViewportToFitPlace(mapObj, place) {
+    if (place.geometry.viewport) mapObj.fitBounds(place.geometry.viewport);
     else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
+      mapObj.setCenter(place.geometry.location);
+      mapObj.setZoom(20);
     }
   }
-  // autocomplete origin input
+  // autocomplete origin input box and subsequent map adjustments
   origin_autocomplete.addListener('place_changed', function() {
     const place = origin_autocomplete.getPlace();
     if (!place.geometry) {
@@ -192,13 +143,13 @@ function initMap() {
     }
     expandViewportToFitPlace(map, place);
     clearMarkers();
-    // If the place has a geometry, store its place ID and route if we have
-    // the other place ID
+    map.panBy(-275, 0);
+    // If the place has a geometry, store its place ID and route if we have the other place ID
     origin_place_id = place.place_id;
-    route(origin_place_id, destination_place_id, travel_mode,
-          directionsService, directionsDisplay);
+    route(origin_place_id, destination_place_id, travel_mode, directionsService, directionsDisplay);
   });
-  // autocomplete destination input box
+
+  // autocomplete destination input box and subsquent map adjustments
   destination_autocomplete.addListener('place_changed', function() {
     const place = destination_autocomplete.getPlace();
     if (!place.geometry) {
@@ -207,32 +158,40 @@ function initMap() {
     }
     expandViewportToFitPlace(map, place);
     clearMarkers();
+    map.panBy(-275, 0);
     // If the place has a geometry, store its place ID and route if we have the other place ID
     destination_place_id = place.place_id;
-    route(origin_place_id, destination_place_id, travel_mode,
-          directionsService, directionsDisplay);
+    route(origin_place_id, destination_place_id, travel_mode, directionsService, directionsDisplay);
   });
 
-  // create the route
+  // create the directions route and map it onto the map
   function route(origin_place_id, destination_place_id, travel_mode,
-    directionsService, directionsDisplay) {
+  directionsService, directionsDisplay) {
     if (!origin_place_id || !destination_place_id) return;
-
+    // makes the call to directions api with directionsRequest object passed in
     directionsService.route({
       origin: { placeId: origin_place_id },
       destination: { placeId: destination_place_id },
       travelMode: travel_mode,
+    // callback function to execute once directions are received
     }, function (response, status) {
-      const path = new google.maps.Polyline({
-        path: response.routes[0].overview_path,
-      });
+      // grabs points at a specified distance of route into an array; saved as 'points',
+      // will be sent to backed to make yelp calls at those locations
+      const path = new google.maps.Polyline({ path: response.routes[0].overview_path });
+      points = path.GetPointsAtDistance(1000);
 
-      const length = google.maps.geometry.spherical.computeLength(path.getPath());
-      const remainingDist = length;
-      const result = [];
-
+      // if directions were received sucessfully, display them on the map
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+        // override default viewport to adjust for nav window
+        setTimeout(function () { map.panBy(-275, 0); }, 200);
+      }
+      else window.alert('Directions request failed due to ' + status);
       // this part adds points to map at specific interval; want to save it even though not
-      // neccessary to app
+      // neccessary to the functionality of the finished app
+      // const length = google.maps.geometry.spherical.computeLength(path.getPath());
+      // const remainingDist = length;
+      // const result = [];
       // while (remainingDist > 0) {
       //   // result.push(path.GetPointAtDistance(1000*i));
       //   createMarker(map, path.GetPointAtDistance(1000*i), i+" km");
@@ -246,12 +205,6 @@ function initMap() {
       //     title: title
       //     });
       //   }
-
-      // grabs points at a specified distance into an array
-      points = path.GetPointsAtDistance(1000);
-
-      if (status === google.maps.DirectionsStatus.OK) directionsDisplay.setDirections(response);
-      else window.alert('Directions request failed due to ' + status);
     });
   }
 }
@@ -264,83 +217,82 @@ function clearMarkers() {
   markersArray.length = 0;
 }
 
-// // handles search data and sends form data from front to server
-// $(document).ready(function () {
-//   // callback used to create info window on each point
-//   function getInfoCallback(map, content) {
-//     const infoWindow = new google.maps.InfoWindow({ content: content });
-//     return function () {
-//       infoWindow.setContent(content);
-//       infoWindow.open(map, this);
-//
-//       // below code overrides some of the google map api info window styling
-//       var iwOuter = $('.gm-style-iw');
-//       var iwBackground = iwOuter.prev();
-//       iwBackground.children(':nth-child(2)').css({'display' : 'none'});
-//       iwBackground.children(':nth-child(4)').css({'display' : 'none'});
-//       // re-positions the close button
-//       iwOuter.next().css({ right: '40px', top: '60px' });
-//     };
-//   }
-//   // grabs data from third entry form area ('enter search term')
-//   $('.submit').on('click', function () {
-//     const inputEl = $('#search-input');
-//     category = inputEl.val();
-//     points = JSON.stringify(points);
-//     // makes ajax call sending data from front end to server
-//     // success function receives yelp data back as response
-//     $.ajax({
-//       type: 'POST',
-//       url: "/",
-//       dataType: "json",
-//       data: { category: category, points: points },
-//       success: function(data) {
-//         console.log(data);
-//         for (var i = 0; i < data.length; i++) {
-//           const lat = JSON.parse(data[i].location).latitude;
-//           const ling = JSON.parse(data[i].location).longitude;
-//           const latLing = new google.maps.LatLng(lat, ling);
-//
-//           // html content for info windows
-//           let contentString =
-//           "<div id='infoWindow'>"+
-//           "<div id='windowBody'>"+
-//           "<div id='heading'>"+data[i].name+"</div>"+
-//           "<p>CATEGORY: "+data[i].category+"</p>"+
-//           "<img src="+data[i].rating+"><br>"+
-//           "<img src="+data[i].image+">"+
-//           "<a class='yelpPage' href="+data[i].url+">Visit Page</a>"+
-//           "</div></div>";
-//
-//           // define icon settings (size and image)
-//           let icon = {
-//             scaledSize: new google.maps.Size(50, 50),
-//             url: '../assets/marker1.svg',
-//           };
-//           // create markers with specified settings
-//           const marker = new google.maps.Marker({
-//             position: latLing,
-//             map: map,
-//             title: data[i].name,
-//             animation: google.maps.Animation.DROP,
-//             icon: icon,
-//           });
-//           markersArray.push(marker);
-//           google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
-//         }
-//       },
-//     });
-//   });
-//
-//   // function for 'clear' button -- clears fields
-//   $('.clear').on('click', function () {
-//     $('#origin-input').val('');
-//     $('#destination-input').val('');
-//     $('#search-input').val('');
-//   });
-// });
+// handles search data and sends form data from front to server
+$(document).ready(function () {
+  // callback used to create info window on each point
+  function getInfoCallback(map, content) {
+    const infoWindow = new google.maps.InfoWindow({ content: content });
+    return function () {
+      infoWindow.setContent(content);
+      infoWindow.open(map, this);
+
+      // below code overrides some of the default google map api info window styling
+      var iwOuter = $('.gm-style-iw');
+      var iwBackground = iwOuter.prev();
+      iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+      iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+      // re-positions the close button
+      iwOuter.next().css({ right: '40px', top: '60px' });
+    };
+  }
+  // grabs data from third entry form area ('enter search term')
+  $('.submit').on('click', function () {
+    const inputEl = $('#search-input');
+    category = inputEl.val();
+    points = JSON.stringify(points);
+    // makes ajax call sending data from front end to server
+    // success function receives yelp data back as response
+    $.ajax({
+      type: 'POST',
+      url: "/",
+      dataType: "json",
+      data: { category: category, points: points },
+      success: function(data) {
+        console.log(data);
+        for (var i = 0; i < data.length; i++) {
+          const lat = JSON.parse(data[i].location).latitude;
+          const ling = JSON.parse(data[i].location).longitude;
+          const latLing = new google.maps.LatLng(lat, ling);
+
+          // html content for info windows
+          let contentString =
+          "<div id='infoWindow'>"+
+          "<div id='windowBody'>"+
+          "<div id='heading'>"+data[i].name+"</div>"+
+          "<p>CATEGORY: "+data[i].category+"</p>"+
+          "<img src="+data[i].rating+"><br>"+
+          "<img src="+data[i].image+">"+
+          "<a class='yelpPage' href="+data[i].url+">Visit Page</a>"+
+          "</div></div>";
+
+          // define icon settings (size and image)
+          let icon = {
+            scaledSize: new google.maps.Size(50, 50),
+            url: '../assets/marker1.svg',
+          };
+          // create markers with specified settings
+          const marker = new google.maps.Marker({
+            position: latLing,
+            map: map,
+            title: data[i].name,
+            animation: google.maps.Animation.DROP,
+            icon: icon,
+          });
+          markersArray.push(marker);
+          google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString));
+        }
+      },
+    });
+  });
+
+  // function for 'clear' button -- clears fields in red nav box
+  $('.clear').on('click', function () {
+    $('#origin-input').val('');
+    $('#destination-input').val('');
+    $('#search-input').val('');
+  });
+});
 
 if (typeof exports !== 'undefined') {
     exports.clearMakers = clearMarkers;
 }
-// export default clearMarkers;
