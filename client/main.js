@@ -240,15 +240,14 @@ $(document).ready(function () {
     const inputEl = $('#search-input');
     category = inputEl.val();
     points = JSON.stringify(points);
-    // makes ajax call sending data from front end to server
-    // success function receives yelp data back as response
+    // makes ajax post call sending data from front end to server
+    // success function receives yelp data back as response and populates info window
     $.ajax({
       type: 'POST',
       url: "/",
       dataType: "json",
       data: { category: category, points: points },
       success: function(data) {
-        console.log(data);
         for (var i = 0; i < data.length; i++) {
           const lat = JSON.parse(data[i].location).latitude;
           const ling = JSON.parse(data[i].location).longitude;
@@ -262,7 +261,7 @@ $(document).ready(function () {
           "<p>CATEGORY: "+data[i].category+"</p>"+
           "<img src="+data[i].rating+"><br>"+
           "<img src="+data[i].image+">"+
-          "<a class='yelpPage' href="+data[i].url+">Visit Page</a>"+
+          "<a class='yelpPage' href="+data[i].url+" target='_blank'>Visit Page</a>"+
           "</div></div>";
 
           // define icon settings (size and image)
