@@ -20,7 +20,7 @@
   left: 10px;
   z-index: 99;
   opacity: 0.9;
-  width: 400px;
+  width: 350px;
 }
 #text-container {
   width: 80%;
@@ -33,7 +33,7 @@ h1 {
   text-transform: uppercase;
   letter-spacing: .3em;
   font-size: 1.7em;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   text-align: center;
   font-family: 'Roboto', sans-serif;
   font-weight: lighter;
