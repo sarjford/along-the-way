@@ -1,3 +1,7 @@
+hostname = process.env.HOSTNAME || 'localhost',
+  port = parseInt(process.env.PORT, 10) || 3000,
+  publicDir = process.argv[2] || __dirname + '/public';
+
 const express = require('express');
 
 const app = express();
@@ -13,7 +17,7 @@ const request = require('request-promise');
 const set_parameters = {};
 
 app.use(express.static(path.join(__dirname, '../')));
-app.listen(3000);
+app.listen(port);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -30,6 +34,7 @@ app.post('/', function (req, res) {
     const latLong = item.lat + ',' + item.lng;
     set_parameters.ll = latLong;
     return request_yelp(set_parameters).then(function (body) {
+      console.log(body);
       return JSON.parse(body);
     });
   }).then(function (yelpBody) {
